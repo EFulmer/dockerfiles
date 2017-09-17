@@ -5,15 +5,13 @@ ENV ZOMBODB_VER 3.0.0
 ENV POSTGIS_VER 2.2
 ENV SKYTOOLS_VERSION 3.2.6-4.pgdg80+1
 
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates wget python-pip curl build-essential
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates wget python-pip curl build-essential libssl-dev libkrb5-dev
 
-RUN \
-  echo "deb [arch=amd64] http://packages.2ndquadrant.com/pglogical/apt/ jessie-2ndquadrant main\n" \
-    > /etc/apt/sources.list.d/2ndquadrant.list
-
-RUN wget --quiet -O - http://packages.2ndquadrant.com/pglogical/apt/AA7A6805.asc | apt-key add - && apt-get update
 
 RUN apt-get install -y --no-install-recommends postgresql-server-dev-${PG_MAJOR} libpq-dev
+
+# this is the line i added
+RUN apt-get install -y postgresql-plpython3-9.5
 
 # Install zombo
 RUN cd / && mkdir zombodb && cd zombodb \
@@ -24,10 +22,6 @@ RUN cd / && mkdir zombodb && cd zombodb \
 RUN pip install pgxnclient && pgxn install temporal_tables
 
 RUN apt-get install -y --no-install-recommends postgresql-${PG_MAJOR}-postgis-${POSTGIS_VER}
-
-RUN apt-get install -y --no-install-recommends \
-  postgresql-${PG_MAJOR}-pglogical \
-  postgresql-${PG_MAJOR}-pglogical-output
 
 RUN apt-get install -y postgresql-${PG_MAJOR}-pgq3
 
