@@ -2,7 +2,7 @@
 
 set -e
 
-psql -c 'CREATE LANGUAGE plpython3u;' -U postgres code-or-die
+psql -c 'CREATE EXTENSION plpython3u;' -U postgres code-or-die
 
 ### Example of replication from "sheerun" database to "sheerun_history"
 ### Please note that schema is not relicated, tables must be the same

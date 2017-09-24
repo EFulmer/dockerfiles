@@ -1,27 +1,21 @@
 FROM postgres:9.5
-MAINTAINER Adam Stankiewicz <sheerun@sher.pl>
+MAINTAINER Eric Fulmer <eric.r.fulmer@gmail.com>
 
-ENV ZOMBODB_VER 3.0.0
-ENV POSTGIS_VER 2.2
-ENV SKYTOOLS_VERSION 3.2.6-4.pgdg80+1
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+    wget \
+    python-pip \
+    curl \
+    build-essential \
+    libssl-dev \
+    libkrb5-dev \
+    postgresql-server-dev-${PG_MAJOR} \
+    libpq-dev
 
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates wget python-pip curl build-essential libssl-dev libkrb5-dev
-
-
-RUN apt-get install -y --no-install-recommends postgresql-server-dev-${PG_MAJOR} libpq-dev
-
-# this is the line i added
+# Install PL/Python
 RUN apt-get install -y postgresql-plpython3-9.5
-
-# Install zombo
-RUN cd / && mkdir zombodb && cd zombodb \
-  && wget https://github.com/zombodb/zombodb/releases/download/v${ZOMBODB_VER}/zombodb_trusty_pg95-${ZOMBODB_VER}_amd64.deb \
-  && cd /zombodb && dpkg -i zombodb_trusty_pg95-${ZOMBODB_VER}_amd64.deb
 
 # Install temporal tables extension
 RUN pip install pgxnclient && pgxn install temporal_tables
-
-RUN apt-get install -y --no-install-recommends postgresql-${PG_MAJOR}-postgis-${POSTGIS_VER}
 
 RUN apt-get install -y postgresql-${PG_MAJOR}-pgq3
 
